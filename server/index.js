@@ -1,20 +1,10 @@
-const http = require('http');
-const { url } = require('url');
-const {WebSocketServer} = require('ws')
+const ws = require('ws');
+const  server  = new ws.Server({ port: 3000 });
 
-const server = http.createServer()
-
-const wsServer =  new WebSocketServer({server})
-const port = 8000
-
-
-
-wsServer.on("connection",(connection,request)=>{
-    //ws://localhost:8000?username=Zahra
-
-    const {username} = url.parse(request.url,true).query
-    console.log("username")
-})
-server.listen(port, ()=>{
-    console.log(`Websocket server is running on ${port}` )
-})
+server.on('connection', (socket) => {
+    socket.on('message', (message) => {
+        const b = Buffer.from(message)
+        console.log(b.toString());
+        socket.send(`${message}`);
+    })
+});
